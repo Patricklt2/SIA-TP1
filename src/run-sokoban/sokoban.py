@@ -8,6 +8,23 @@ class SokobanMap:
     def __repr__(self):
         return f"<SokobanMap player={self.player} boxes={len(self.boxes)} goals={len(self.goals)}>"
 
+class SokobanState:
+    def __init__(self, player, boxes, parent=None, move=None, cost=0):
+        self.player = player
+        self.boxes = frozenset(boxes)
+        self.parent = parent
+        self.move = move
+        self.cost = cost
+
+    def is_goal(self, goals):
+        return self.boxes == goals
+
+    def __hash__(self):
+        return hash((self.player, self.boxes))
+
+    def __eq__(self, other):
+        return (self.player, self.boxes) == (other.player, other.boxes)
+
 def parse_map(filepath):
     walls = set()
     goals = set()
@@ -40,3 +57,35 @@ def parse_map(filepath):
 
     return SokobanMap(walls, goals, boxes, player)
 
+def get_neighbors(state, sokoban_map):
+    moves = [(-1,0,'Up'), (1,0,'Down'), (0,-1,'Left'), (0,1,'Right')]
+    neighbors = []
+
+    for dr, dc, action in moves:
+        new_r = state.player[0] + dr
+        new_c = state.player[1] + dc
+        new_pos = (new_r, new_c)
+
+        if new_pos in sokoban_map.walls:
+            continue
+
+        new_boxes = set(state.boxes)
+        if new_pos in state.boxes:
+            box_r = new_r + dr
+            box_c = new_c + dc
+            new_box_pos = (box_r, box_c)
+            if new_box_pos in sokoban_map.walls or new_box_pos in state.boxes:
+                continue
+            new_boxes.remove(new_pos)
+            new_boxes.add(new_box_pos)
+
+        neighbors.append(SokobanState(new_pos, new_boxes, parent=state, move=action, cost=state.cost+1))
+
+    return neighbors
+
+def reconstruct_path(state):
+    path = []
+    while state.parent is not None:
+        path.append(state.move)
+        state = state.parent
+    return list(reversed(path))
