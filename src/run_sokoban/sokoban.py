@@ -91,10 +91,7 @@ def get_neighbors(state, sokoban_map, dead_squares):
             if new_box_pos in dead_squares and new_box_pos not in goals:
                 continue
 
-            if ((box_r-1, box_c) in walls and (box_r, box_c-1) in walls) or \
-               ((box_r-1, box_c) in walls and (box_r, box_c+1) in walls) or \
-               ((box_r+1, box_c) in walls and (box_r, box_c-1) in walls) or \
-               ((box_r+1, box_c) in walls and (box_r, box_c+1) in walls):
+            if is_box_stuck(new_box_pos, new_boxes, walls, goals):
                 continue
 
             squares = [(box_r, box_c), (box_r+1, box_c), (box_r, box_c+1), (box_r+1, box_c+1)]
@@ -110,6 +107,19 @@ def get_neighbors(state, sokoban_map, dead_squares):
         neighbors.append(SokobanState(new_pos, new_boxes, parent=state, move=action, cost=state.cost+1))
 
     return neighbors
+
+def is_box_stuck(box_pos, boxes, walls, goals):
+    if box_pos in goals:
+        return False
+    
+    r, c = box_pos
+    directions = [(-1,0), (1,0), (0,-1), (0,1)]
+    
+    for dr, dc in directions:
+        target = (r+dr, c+dc)
+        if target not in walls and target not in boxes:
+            return False
+    return True
 
 def reconstruct_path(state):
     path = []
