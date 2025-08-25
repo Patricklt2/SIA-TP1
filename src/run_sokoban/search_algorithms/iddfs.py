@@ -1,5 +1,5 @@
 import time
-from ..sokoban import get_neighbors, is_deadlock
+from ..sokoban import get_neighbors
 from .utils import get_result
 
 def iddfs(initial_state, sokoban_map, dead_squares, max_depth=50):
@@ -26,8 +26,8 @@ def iddfs(initial_state, sokoban_map, dead_squares, max_depth=50):
                 return get_result(state, nodes_expanded, max_frontier, start_time, success=True)
 
             if depth < depth_limit:
-                for neighbor in get_neighbors(state, sokoban_map):
-                    if neighbor not in explored and not is_deadlock(neighbor, sokoban_map, dead_squares):
+                for neighbor in get_neighbors(state, sokoban_map, dead_squares):
+                    if neighbor not in explored:
                         frontier.append((neighbor, depth + 1))
                         max_frontier = max(max_frontier, len(frontier))
 

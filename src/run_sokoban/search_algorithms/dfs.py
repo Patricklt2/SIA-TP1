@@ -1,6 +1,6 @@
 import time
 from collections import deque
-from ..sokoban import get_neighbors, is_deadlock
+from ..sokoban import get_neighbors
 from .utils import get_result
 
 def dfs(initial_state, goals, sokoban_map, dead_squares):
@@ -18,8 +18,8 @@ def dfs(initial_state, goals, sokoban_map, dead_squares):
 
         explored.add(state)
         nodes_expanded += 1
-        for neighbor in get_neighbors(state, sokoban_map):
-            if neighbor not in explored and neighbor not in frontier and not is_deadlock(neighbor, sokoban_map, dead_squares):
+        for neighbor in get_neighbors(state, sokoban_map, dead_squares):
+            if neighbor not in explored and neighbor not in frontier:
                 frontier.append(neighbor)
                 max_frontier = max(max_frontier, len(frontier))
 

@@ -1,5 +1,5 @@
 import os 
-from src.run_sokoban.sokoban import parse_map, SokobanState
+from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares
 from src.run_sokoban.search_algorithms.bfs import bfs
 from src.run_sokoban.search_algorithms.dfs import dfs
 from src.run_sokoban.search_algorithms.iddfs import iddfs
@@ -10,22 +10,23 @@ from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, he
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == "__main__":
-    map_file = os.path.join(BASE_DIR, "maps", "level_149.txt")
+    map_file = os.path.join(BASE_DIR, "maps", "level_54.txt")
     sokoban_map = parse_map(map_file)
+    dead_squares = precompute_dead_squares(sokoban_map)
 
     initial_state = SokobanState(sokoban_map.player, sokoban_map.boxes)
-    result = bfs(initial_state, sokoban_map.goals, sokoban_map)
-    result2 = dfs(initial_state, sokoban_map.goals, sokoban_map)
-    result3 = iddfs(initial_state, sokoban_map, 1000)
-    result4 = astar(initial_state, sokoban_map, manhattan_heuristic)
-    result5 = ggs(initial_state, sokoban_map, manhattan_heuristic)
+   # result = bfs(initial_state, sokoban_map.goals, sokoban_map, dead_squares)
+    result2 = dfs(initial_state, sokoban_map.goals, sokoban_map, dead_squares)
+    result3 = iddfs(initial_state, sokoban_map, dead_squares, 1000)
+    result4 = astar(initial_state, sokoban_map, manhattan_heuristic, dead_squares)
+    result5 = ggs(initial_state, sokoban_map, manhattan_heuristic, dead_squares)
 
-    print(f"Resultado: {result['result']}")
-    print(f"Costo de la solución: {result['cost']}")
-    print(f"Nodos expandidos: {result['nodes_expanded']}")
-    print(f"Tamaño máximo de la frontera: {result['max_frontier']}")
-    print(f"Tiempo de procesamiento: {result['time']:.4f} s")
-    print(f"Solución (movimientos): {result['solution']}")
+   # print(f"Resultado: {result['result']}")
+   # print(f"Costo de la solución: {result['cost']}")
+    #print(f"Nodos expandidos: {result['nodes_expanded']}")
+    #print(f"Tamaño máximo de la frontera: {result['max_frontier']}")
+    #print(f"Tiempo de procesamiento: {result['time']:.4f} s")
+    #print(f"Solución (movimientos): {result['solution']}")
 
     print(f"Resultado: {result2['result']}")
     print(f"Costo de la solución: {result2['cost']}")
