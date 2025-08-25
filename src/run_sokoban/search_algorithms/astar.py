@@ -4,7 +4,7 @@ import itertools
 from ..sokoban import get_neighbors, is_deadlock
 from .utils import get_result
 
-def astar(initial_state, sokoban_map, heuristic):
+def astar(initial_state, sokoban_map, heuristic, dead_squares):
     start_time = time.time()
     goals = sokoban_map.goals
     frontier = []
@@ -28,7 +28,7 @@ def astar(initial_state, sokoban_map, heuristic):
             return get_result(state, nodes_expanded, max_frontier, start_time, success=True)
 
         for neighbor in get_neighbors(state, sokoban_map):
-            if neighbor not in explored and not is_deadlock(neighbor, sokoban_map):
+            if neighbor not in explored and not is_deadlock(neighbor, sokoban_map, dead_squares):
                 g = neighbor.cost
                 h = heuristic(neighbor, goals)
                 heapq.heappush(frontier, (g + h, next(counter), neighbor))
