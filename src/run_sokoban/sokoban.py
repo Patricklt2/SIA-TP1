@@ -156,3 +156,51 @@ def precompute_dead_squares(sokoban_map):
                 dead_squares.add((r, c))
     
     return dead_squares
+
+def compute_reachable(player, boxes, walls):
+    reachable = set()
+    queue = deque([player])
+    while queue:
+        pos = queue.popleft()
+        if pos in reachable:
+            continue
+        reachable.add(pos)
+        r, c = pos
+        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
+            new_pos = (r+dr, c+dc)
+            if new_pos not in walls and new_pos not in boxes and new_pos not in reachable:
+                queue.append(new_pos)
+    return reachable
+
+def get_push_neighbors(state, sokoban_map, dead_squares):
+    directions = [(-1,0,'Up'), (1,0,'Down'), (0,-1,'Left'), (0,1,'Right')]
+    neighbors = []
+
+    walls = sokoban_map.walls
+    goals = sokoban_map.goals
+    boxes = state.boxes
+    reachable = compute_reachable(state.player, boxes, walls)
+
+    for box in boxes:
+        for dr, dc, move in directions:
+            push_from = (box[0]-dr, box[1]-dc)
+            new_box_pos = (box[0]+dr, box[1]+dc)
+
+            if push_from not in reachable:
+                continue
+
+            if new_box_pos in walls or new_box_pos in boxes:
+                continue
+
+            if new_box_pos in dead_squares and new_box_pos not in goals:
+                continue
+
+            if is_box_stuck(new_box_pos, boxes - {box} | {new_box_pos}, walls, goals):
+                continue
+
+            new_boxes = set(boxes)
+            new_boxes.remove(box)
+            new_boxes.add(new_box_pos)
+            neighbors.append(SokobanState(box, new_boxes, parent=state, move=(move, box), cost=state.cost+1))
+
+    return neighbors
