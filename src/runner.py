@@ -10,7 +10,7 @@ from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, he
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == "__main__":
-    map_file = os.path.join(BASE_DIR, "maps", "level_2.txt")
+    map_file = os.path.join(BASE_DIR, "maps", "level_155.txt")
     sokoban_map = parse_map(map_file)
 
     initial_state = SokobanState(sokoban_map.player, sokoban_map.boxes)
