@@ -134,7 +134,6 @@ class SokobanGUI:
         self.results_text.delete("1.0", tk.END)
         name = self.algo_var.get()
         self.run_algorithm(name, self.algo_map[name])
-        self.run_algorithm(name, algo_map[name])
 
 if __name__ == "__main__":
     root = tk.Tk()
