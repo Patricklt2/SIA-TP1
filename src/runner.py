@@ -10,13 +10,13 @@ from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, he
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == "__main__":
-    map_file = os.path.join(BASE_DIR, "maps", "level_57.txt")
+    map_file = os.path.join(BASE_DIR, "maps", "level_149.txt")
     sokoban_map = parse_map(map_file)
 
     initial_state = SokobanState(sokoban_map.player, sokoban_map.boxes)
     result = bfs(initial_state, sokoban_map.goals, sokoban_map)
     result2 = dfs(initial_state, sokoban_map.goals, sokoban_map)
-    result3 = iddfs(initial_state, sokoban_map, 50)
+    result3 = iddfs(initial_state, sokoban_map, 1000)
     result4 = astar(initial_state, sokoban_map, manhattan_heuristic)
     result5 = ggs(initial_state, sokoban_map, manhattan_heuristic)
 
