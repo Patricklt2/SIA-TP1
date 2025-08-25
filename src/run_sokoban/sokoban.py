@@ -201,6 +201,6 @@ def get_push_neighbors(state, sokoban_map, dead_squares):
             new_boxes = set(boxes)
             new_boxes.remove(box)
             new_boxes.add(new_box_pos)
-            neighbors.append(SokobanState(box, new_boxes, parent=state, move=(move, box), cost=state.cost+1))
+            neighbors.append(SokobanState(box, new_boxes, parent=state, move=move, cost=state.cost+1))
 
     return neighbors

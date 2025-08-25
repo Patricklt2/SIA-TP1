@@ -1,7 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares
+from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_push_neighbors, get_neighbors
 from src.run_sokoban.search_algorithms.bfs import bfs
 from src.run_sokoban.search_algorithms.dfs import dfs
 from src.run_sokoban.search_algorithms.iddfs import iddfs
@@ -17,12 +17,13 @@ class SokobanGUI:
         self.master = master
         master.title("Sokoban Solver")
 
+    # Player Mode Map
         self.algo_map = {
-            "BFS": lambda s: bfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares),
-            "DFS": lambda s: dfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares),
-            "IDDFS": lambda s: iddfs(s, self.sokoban_map, self.dead_squares, 1000),
-            "A*": lambda s: astar(s, self.sokoban_map, self.get_heuristic(), self.dead_squares),
-            "GGS": lambda s: ggs(s, self.sokoban_map, self.get_heuristic(), self.dead_squares)
+            "BFS": lambda s: bfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares, self.get_neighbor_method()),
+            "DFS": lambda s: dfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares, self.get_neighbor_method()),
+            "IDDFS": lambda s: iddfs(s, self.sokoban_map, self.dead_squares, self.get_neighbor_method(), 1000),
+            "A*": lambda s: astar(s, self.sokoban_map, self.get_heuristic(), self.dead_squares, self.get_neighbor_method()),
+            "GGS": lambda s: ggs(s, self.sokoban_map, self.get_heuristic(), self.dead_squares, self.get_neighbor_method())
         }
 
         self.map_text = tk.Text(master, width=40, height=20, font=("Courier", 14))
@@ -36,6 +37,12 @@ class SokobanGUI:
 
         self.run_selected_button = tk.Button(master, text="Run Selected Algorithm", command=self.run_selected_algorithm)
         self.run_selected_button.grid(row=1, column=2)
+
+        self.run_mode = tk.StringVar(value="player_mode")
+        self.run_mode_menu = ttk.Combobox(master, textvariable=self.run_mode,
+                                           values=["player_mode", "push_mode"])
+        self.run_mode_menu.grid(row=2, column=2)
+
 
         self.algo_var = tk.StringVar(value="A*")
         self.algo_menu = ttk.Combobox(master, textvariable=self.algo_var, values=["BFS", "DFS", "IDDFS", "A*", "GGS"])
@@ -119,6 +126,14 @@ class SokobanGUI:
         else:
             return manhattan_heuristic
 
+    def get_neighbor_method(self):
+        if self.run_mode.get() == "player_mode":
+            return get_neighbors
+        elif self.run_mode.get() == "push_mode":
+            return get_push_neighbors
+        else:
+            return get_neighbors
+
     def run_algorithm(self, name, algo):
         result = algo(self.initial_state)
         self.results_text.insert(tk.END, f"=== {name} ===\n")
@@ -138,6 +153,10 @@ class SokobanGUI:
             self.animate_button.config(state=tk.DISABLED)
 
     def run_all_algorithms(self):
+        if not self.initial_state:
+            messagebox.showwarning("No map selected", "Please select a map first.")
+            return
+        
         self.results_text.delete("1.0", tk.END)
         for name, algo in self.algo_map.items():
             self.run_algorithm(name, algo)
@@ -146,6 +165,7 @@ class SokobanGUI:
         if not self.initial_state:
             messagebox.showwarning("No map selected", "Please select a map first.")
             return
+        
         self.results_text.delete("1.0", tk.END)
         name = self.algo_var.get()
         self.run_algorithm(name, self.algo_map[name])

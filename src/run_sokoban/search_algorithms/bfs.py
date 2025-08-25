@@ -3,7 +3,7 @@ from collections import deque
 from ..sokoban import get_neighbors
 from .utils import get_result
 
-def bfs(initial_state, goals, sokoban_map, dead_squares):
+def bfs(initial_state, goals, sokoban_map, dead_squares, neighbor_finder):
     start_time = time.time()
     frontier = deque([initial_state])
     explored = set()
@@ -18,7 +18,7 @@ def bfs(initial_state, goals, sokoban_map, dead_squares):
 
         explored.add(state)
         nodes_expanded += 1
-        for neighbor in get_neighbors(state, sokoban_map, dead_squares):
+        for neighbor in neighbor_finder(state, sokoban_map, dead_squares):
             if neighbor not in explored and neighbor not in frontier:
                 frontier.append(neighbor)
                 max_frontier = max(max_frontier, len(frontier))

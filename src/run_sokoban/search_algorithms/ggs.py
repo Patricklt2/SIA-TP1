@@ -4,7 +4,7 @@ import itertools
 from ..sokoban import get_neighbors
 from .utils import get_result
 
-def ggs(initial_state, sokoban_map, heuristic, dead_squares):
+def ggs(initial_state, sokoban_map, heuristic, dead_squares, neighbor_finder):
     start_time = time.time()
     goals = sokoban_map.goals
     frontier = []
@@ -27,7 +27,7 @@ def ggs(initial_state, sokoban_map, heuristic, dead_squares):
             elapsed = time.time() - start_time
             return get_result(state, nodes_expanded, max_frontier, start_time, success=True)
 
-        for neighbor in get_neighbors(state, sokoban_map, dead_squares):
+        for neighbor in neighbor_finder(state, sokoban_map, dead_squares):
             if neighbor not in explored:
                 h = heuristic(neighbor, goals)
                 heapq.heappush(frontier, (h, next(counter), neighbor))
