@@ -1,16 +1,27 @@
 import time
-from collections import deque
-from sokoban import reconstruct_path, get_neighbors
+import heapq
+import itertools
+from ..sokoban import reconstruct_path, get_neighbors
 
-def bfs(initial_state, goals, sokoban_map):
+def ggs(initial_state, sokoban_map, heuristic):
     start_time = time.time()
-    frontier = deque([initial_state])
+    goals = sokoban_map.goals
+    frontier = []
+    counter = itertools.count()
+
+    heapq.heappush(frontier, (heuristic(initial_state, goals), next(counter), initial_state))
     explored = set()
     max_frontier = 1
     nodes_expanded = 0
 
     while frontier:
-        state = frontier.popleft()
+        _, _, state = heapq.heappop(frontier)
+
+        if state in explored:
+            continue
+        explored.add(state)
+        nodes_expanded += 1
+
         if state.is_goal(goals):
             elapsed = time.time() - start_time
             return {
@@ -22,11 +33,10 @@ def bfs(initial_state, goals, sokoban_map):
                 "time": elapsed
             }
 
-        explored.add(state)
-        nodes_expanded += 1
         for neighbor in get_neighbors(state, sokoban_map):
-            if neighbor not in explored and neighbor not in frontier:
-                frontier.append(neighbor)
+            if neighbor not in explored:
+                h = heuristic(neighbor, goals)
+                heapq.heappush(frontier, (h, next(counter), neighbor))
                 max_frontier = max(max_frontier, len(frontier))
 
     elapsed = time.time() - start_time
