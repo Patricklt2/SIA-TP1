@@ -1,7 +1,8 @@
 import time
 import heapq
 import itertools
-from ..sokoban import reconstruct_path, get_neighbors
+from ..sokoban import get_neighbors
+from .utils import get_result
 
 def ggs(initial_state, sokoban_map, heuristic):
     start_time = time.time()
@@ -24,14 +25,7 @@ def ggs(initial_state, sokoban_map, heuristic):
 
         if state.is_goal(goals):
             elapsed = time.time() - start_time
-            return {
-                "result": "Éxito",
-                "solution": reconstruct_path(state),
-                "cost": state.cost,
-                "nodes_expanded": nodes_expanded,
-                "max_frontier": max_frontier,
-                "time": elapsed
-            }
+            return get_result(state, nodes_expanded, max_frontier, start_time, success=True)
 
         for neighbor in get_neighbors(state, sokoban_map):
             if neighbor not in explored:
@@ -40,11 +34,4 @@ def ggs(initial_state, sokoban_map, heuristic):
                 max_frontier = max(max_frontier, len(frontier))
 
     elapsed = time.time() - start_time
-    return {
-        "result": "Fracaso",
-        "solution": [],
-        "cost": None,
-        "nodes_expanded": nodes_expanded,
-        "max_frontier": max_frontier,
-        "time": elapsed
-    }
+    return get_result(None, nodes_expanded, max_frontier, start_time, success=False)

@@ -1,6 +1,7 @@
 import time
 from collections import deque
-from ..sokoban import reconstruct_path, get_neighbors
+from ..sokoban import get_neighbors
+from .utils import get_result
 
 def dfs(initial_state, goals, sokoban_map):
     start_time = time.time()
@@ -13,14 +14,7 @@ def dfs(initial_state, goals, sokoban_map):
         state = frontier.pop()
         if state.is_goal(goals):
             elapsed = time.time() - start_time
-            return {
-                "result": "Éxito",
-                "solution": reconstruct_path(state),
-                "cost": state.cost,
-                "nodes_expanded": nodes_expanded,
-                "max_frontier": max_frontier,
-                "time": elapsed
-            }
+            return get_result(state, nodes_expanded, max_frontier, start_time, success=True)
 
         explored.add(state)
         nodes_expanded += 1
@@ -30,11 +24,4 @@ def dfs(initial_state, goals, sokoban_map):
                 max_frontier = max(max_frontier, len(frontier))
 
     elapsed = time.time() - start_time
-    return {
-        "result": "Fracaso",
-        "solution": [],
-        "cost": None,
-        "nodes_expanded": nodes_expanded,
-        "max_frontier": max_frontier,
-        "time": elapsed
-    }
+    return get_result(None, nodes_expanded, max_frontier, start_time, success=False)
