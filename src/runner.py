@@ -16,6 +16,14 @@ class SokobanGUI:
         self.master = master
         master.title("Sokoban Solver")
 
+        self.algo_map = {
+            "BFS": lambda s: bfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares),
+            "DFS": lambda s: dfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares),
+            "IDDFS": lambda s: iddfs(s, self.sokoban_map, self.dead_squares, 1000),
+            "A*": lambda s: astar(s, self.sokoban_map, self.get_heuristic(), self.dead_squares),
+            "GGS": lambda s: ggs(s, self.sokoban_map, self.get_heuristic(), self.dead_squares)
+        }
+
         self.map_text = tk.Text(master, width=40, height=20, font=("Courier", 14))
         self.map_text.grid(row=0, column=0, columnspan=4)
 
@@ -116,14 +124,7 @@ class SokobanGUI:
 
     def run_all_algorithms(self):
         self.results_text.delete("1.0", tk.END)
-        algorithms = [
-            ("BFS", lambda s: bfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares)),
-            ("DFS", lambda s: dfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares)),
-            ("IDDFS", lambda s: iddfs(s, self.sokoban_map, self.dead_squares, 1000)),
-            ("A*", lambda s: astar(s, self.sokoban_map, self.get_heuristic(), self.dead_squares)),
-            ("GGS", lambda s: ggs(s, self.sokoban_map, self.get_heuristic(), self.dead_squares))
-        ]
-        for name, algo in algorithms:
+        for name, algo in self.algo_map.items():
             self.run_algorithm(name, algo)
 
     def run_selected_algorithm(self):
@@ -132,13 +133,7 @@ class SokobanGUI:
             return
         self.results_text.delete("1.0", tk.END)
         name = self.algo_var.get()
-        algo_map = {
-            "BFS": lambda s: bfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares),
-            "DFS": lambda s: dfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares),
-            "IDDFS": lambda s: iddfs(s, self.sokoban_map, self.dead_squares, 1000),
-            "A*": lambda s: astar(s, self.sokoban_map, self.get_heuristic(), self.dead_squares),
-            "GGS": lambda s: ggs(s, self.sokoban_map, self.get_heuristic(), self.dead_squares)
-        }
+        self.run_algorithm(name, self.algo_map[name])
         self.run_algorithm(name, algo_map[name])
 
 if __name__ == "__main__":
