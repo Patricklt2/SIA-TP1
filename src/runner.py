@@ -8,6 +8,7 @@ from src.run_sokoban.search_algorithms.iddfs import iddfs
 from src.run_sokoban.search_algorithms.astar import astar
 from src.run_sokoban.search_algorithms.ggs import ggs
 from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes
+from src.animation_window import AnimationWindow
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -48,9 +49,13 @@ class SokobanGUI:
         self.results_text = tk.Text(master, width=80, height=20)
         self.results_text.grid(row=3, column=0, columnspan=4)
 
+        self.animate_button = tk.Button(master, text="Animate Solution", command=self.animate_solution, state=tk.DISABLED)
+        self.animate_button.grid(row=2, column=0)
+
         self.sokoban_map = None
         self.dead_squares = None
         self.initial_state = None
+        self.last_solution = None
 
     def display_map(self):
         self.map_text.delete("1.0", tk.END)
@@ -101,6 +106,8 @@ class SokobanGUI:
         self.dead_squares = precompute_dead_squares(self.sokoban_map)
         self.initial_state = SokobanState(self.sokoban_map.player, self.sokoban_map.boxes)
         self.display_map()
+        self.animate_button.config(state=tk.DISABLED)
+        self.last_solution = None
 
     def get_heuristic(self):
         if self.heuristic_var.get() == "manhattan_heuristic":
@@ -120,7 +127,15 @@ class SokobanGUI:
         self.results_text.insert(tk.END, f"Nodes expanded: {result['nodes_expanded']}\n")
         self.results_text.insert(tk.END, f"Max frontier size: {result['max_frontier']}\n")
         self.results_text.insert(tk.END, f"Time: {result['time']:.4f} s\n")
-        self.results_text.insert(tk.END, f"Moves: {' '.join(result['solution'])}\n\n")
+        if 'solution' in result and result['solution']:
+            moves_text = ' '.join(result['solution'])
+            self.results_text.insert(tk.END, f"Moves: {moves_text}\n\n")
+            self.last_solution = result['solution']
+            self.animate_button.config(state=tk.NORMAL)
+        else:
+            self.results_text.insert(tk.END, "No solution found\n\n")
+            self.last_solution = None
+            self.animate_button.config(state=tk.DISABLED)
 
     def run_all_algorithms(self):
         self.results_text.delete("1.0", tk.END)
@@ -134,6 +149,15 @@ class SokobanGUI:
         self.results_text.delete("1.0", tk.END)
         name = self.algo_var.get()
         self.run_algorithm(name, self.algo_map[name])
+
+    def animate_solution(self):
+        if not self.last_solution or not self.sokoban_map:
+            messagebox.showwarning("No solution", "No solution to animate. Please run an algorithm first.")
+            return
+        
+        # Create a new window for animation
+        animation_window = tk.Toplevel(self.master)
+        AnimationWindow(animation_window, self.sokoban_map, self.last_solution)
 
 if __name__ == "__main__":
     root = tk.Tk()
