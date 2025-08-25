@@ -1,6 +1,6 @@
 import time
 from collections import deque
-from ..sokoban import get_neighbors
+from ..sokoban import get_neighbors, is_deadlock
 from .utils import get_result
 
 def bfs(initial_state, goals, sokoban_map):
@@ -19,7 +19,7 @@ def bfs(initial_state, goals, sokoban_map):
         explored.add(state)
         nodes_expanded += 1
         for neighbor in get_neighbors(state, sokoban_map):
-            if neighbor not in explored and neighbor not in frontier:
+            if neighbor not in explored and neighbor not in frontier and not is_deadlock(neighbor, sokoban_map):
                 frontier.append(neighbor)
                 max_frontier = max(max_frontier, len(frontier))
 

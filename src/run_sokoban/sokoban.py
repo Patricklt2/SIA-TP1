@@ -83,6 +83,20 @@ def get_neighbors(state, sokoban_map):
 
     return neighbors
 
+def is_deadlock(state, sokoban_map):
+    for box in state.boxes:
+        if box in sokoban_map.goals:
+            continue
+
+        r, c = box
+        walls = sokoban_map.walls
+
+        if ((r-1, c) in walls or (r+1, c) in walls) and \
+           ((r, c-1) in walls or (r, c+1) in walls):
+            return True
+
+    return False
+
 def reconstruct_path(state):
     path = []
     while state.parent is not None:
