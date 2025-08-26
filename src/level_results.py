@@ -61,6 +61,8 @@ def run_single_level(level_name):
         for algo_name, algo_func in basic_algorithms.items():
             print(f"Corriendo {algo_name} en {level_name}...")
             result = algo_func(initial_state)
+            solution_list = result.get('solution', [])
+            solution_str = ' '.join(f"{pos[0]},{pos[1]}" for pos, _id in solution_list) if solution_list else ''
             
             results.append({
                 "level": level_name,
@@ -72,7 +74,7 @@ def run_single_level(level_name):
                 "max_frontier": result.get('max_frontier'),
                 "time": result.get('time'),
                 "solution_length": len(result.get('solution', [])) if result.get('solution') else None,
-                "solution": ' '.join(result.get('solution', [])) if result.get('solution') else ''
+                "solution": solution_str
             })
             print(f"✔ {algo_name} completado (success={result['result']})")
         
@@ -84,6 +86,9 @@ def run_single_level(level_name):
             print(f"Corriendo A* con {heuristic_name} en {level_name}...")
             try:
                 result_astar = astar(initial_state, sokoban_map, heuristic_func, dead_squares, get_neighbors)
+                solution_list = result_astar.get('solution', [])
+                solution_str = ' '.join(f"{pos[0]},{pos[1]}" for pos, _id in solution_list) if solution_list else ''
+                
                 results.append({
                     "level": level_name,
                     "algorithm": "A*",
@@ -94,7 +99,7 @@ def run_single_level(level_name):
                     "max_frontier": result_astar.get('max_frontier'),
                     "time": result_astar.get('time'),
                     "solution_length": len(result_astar.get('solution', [])) if result_astar.get('solution') else None,
-                    "solution": ' '.join(result_astar.get('solution', [])) if result_astar.get('solution') else ''
+                    "solution": solution_str
                 })
                 print(f"✔ A*_{heuristic_name} completado (success={result_astar['result']})")
             except Exception as e:
@@ -116,6 +121,9 @@ def run_single_level(level_name):
             print(f"Corriendo GGS con {heuristic_name} en {level_name}...")
             try:
                 result_ggs = ggs(initial_state, sokoban_map, heuristic_func, dead_squares, get_neighbors)
+                solution_list = result_ggs.get('solution', [])
+                solution_str = ' '.join(f"{pos[0]},{pos[1]}" for pos, _id in solution_list) if solution_list else ''
+                
                 results.append({
                     "level": level_name,
                     "algorithm": "GGS",
@@ -126,7 +134,7 @@ def run_single_level(level_name):
                     "max_frontier": result_ggs.get('max_frontier'),
                     "time": result_ggs.get('time'),
                     "solution_length": len(result_ggs.get('solution', [])) if result_ggs.get('solution') else None,
-                    "solution": ' '.join(result_ggs.get('solution', [])) if result_ggs.get('solution') else ''
+                    "solution": solution_str
                 })
                 print(f"✔ GGS_{heuristic_name} completado (success={result_ggs['result']})")
             except Exception as e:
