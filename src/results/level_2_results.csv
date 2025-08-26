@@ -1,0 +1,10 @@
+level,algorithm,heuristic,success,cost,nodes_expanded,max_frontier,time,solution_length,solution
+level_2,BFS,N/A,Éxito,16,963,272,0.0836632251739502,16,Right Down Down Left Right Up Up Left Down Up Up Left Left Down Down Right
+level_2,DFS,N/A,Éxito,18,19,14,0.0005972385406494141,18,Right Down Down Left Right Up Up Left Down Right Down Down Left Left Left Up Up Right
+level_2,IDDFS,N/A,Éxito,28,387,26,0.1651456356048584,28,Right Down Down Left Right Down Left Left Left Up Up Up Up Right Right Right Down Left Down Right Down Down Left Left Left Up Up Right
+level_2,A*,manhattan,Éxito,16,365,164,0.009573221206665039,16,Right Down Down Left Right Up Up Left Down Up Up Left Left Down Down Right
+level_2,GGS,manhattan,Éxito,16,47,11,0.0016314983367919922,16,Right Down Down Left Right Up Up Left Down Up Up Left Left Down Down Right
+level_2,A*,boxes_out,Éxito,16,496,229,0.009603023529052734,16,Right Down Down Left Right Up Up Left Down Up Up Left Left Down Down Right
+level_2,GGS,boxes_out,Éxito,16,57,13,0.0016427040100097656,16,Right Down Down Left Right Up Up Left Down Up Up Left Left Down Down Right
+level_2,A*,player_boxes,Éxito,18,346,255,0.01114201545715332,18,Right Down Down Left Right Up Up Left Down Right Down Down Left Left Left Up Up Right
+level_2,GGS,player_boxes,Éxito,18,133,128,0.005695343017578125,18,Right Down Down Left Right Up Up Left Down Right Down Down Left Left Left Up Up Right

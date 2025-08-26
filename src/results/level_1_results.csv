@@ -1,0 +1,10 @@
+level,algorithm,heuristic,success,cost,nodes_expanded,max_frontier,time,solution_length,solution
+level_1,BFS,N/A,Éxito,33,296,24,0.0072345733642578125,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,DFS,N/A,Éxito,33,209,22,0.007992744445800781,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,IDDFS,N/A,Éxito,37,150,26,0.08383440971374512,37,Down Left Up Right Right Right Down Left Right Up Left Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Right Down Left Left Up Up
+level_1,A*,manhattan,Éxito,33,290,28,0.004882335662841797,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,GGS,manhattan,Éxito,33,262,20,0.009102821350097656,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,A*,boxes_out,Éxito,33,290,29,0.008098602294921875,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,GGS,boxes_out,Éxito,33,261,26,0.006204366683959961,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,A*,player_boxes,Éxito,33,284,42,0.007971763610839844,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
+level_1,GGS,player_boxes,Éxito,33,191,60,0.008869171142578125,33,Down Left Up Right Right Right Down Left Up Left Left Down Down Right Up Left Up Right Up Up Left Down Right Down Down Right Right Up Left Down Left Up Up
