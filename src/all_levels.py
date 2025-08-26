@@ -10,7 +10,6 @@ from src.run_sokoban.search_algorithms.ggs import ggs
 from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic
 from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_neighbors
 
-
 MAPS_DIR = Path("src/maps2")
 RESULTS_DIR = Path("src/results")
 RESULTS_DIR.mkdir(exist_ok=True)
@@ -27,7 +26,6 @@ def make_algo_map(sokoban_map, dead_squares):
 
 def run_all_levels():
     files = sorted(MAPS_DIR.glob("level_*.txt"))
-    files = [f for f in files if 1 <= int(f.stem.split("_")[1]) <= 10]
 
     for algo_name in ["BFS", "DFS", "IDDFS", "A", "GGS"]:
         print(f"\n=== Ejecutando {algo_name} en todos los niveles ===")
