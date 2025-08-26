@@ -17,7 +17,6 @@ class SokobanGUI:
         self.master = master
         master.title("Sokoban Solver")
 
-    # Player Mode Map
         self.algo_map = {
             "BFS": lambda s: bfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares, self.get_neighbor_method()),
             "DFS": lambda s: dfs(s, self.sokoban_map.goals, self.sokoban_map, self.dead_squares, self.get_neighbor_method()),
@@ -42,7 +41,6 @@ class SokobanGUI:
         self.run_mode_menu = ttk.Combobox(master, textvariable=self.run_mode,
                                            values=["player_mode", "push_mode"])
         self.run_mode_menu.grid(row=2, column=2)
-
 
         self.algo_var = tk.StringVar(value="A*")
         self.algo_menu = ttk.Combobox(master, textvariable=self.algo_var, values=["BFS", "DFS", "IDDFS", "A*", "GGS"])
