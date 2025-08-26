@@ -4,7 +4,7 @@ from tkinter import ttk
 import argparse
 import csv
 from pathlib import Path
-from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares
+from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, Box
 
 class MultiAnimationWindow:
     def __init__(self, master, sokoban_map, algorithm_results):
@@ -158,7 +158,8 @@ class MultiAnimationWindow:
         canvas.delete("all")
         
         walls, floors, goals = self.sokoban_map.walls, self.sokoban_map.floors, self.sokoban_map.goals
-        boxes, player = state.boxes, state.player
+        box_positions = {box.pos for box in state.boxes}
+        player = state.player
         
         # Calcular dimensiones
         min_r = min(r for r, c in floors | walls)
@@ -200,7 +201,7 @@ class MultiAnimationWindow:
                     canvas.create_oval(x1 + 2, y1 + 2, x2 - 2, y2 - 2, fill='lightgreen', outline='green')
                 
                 # Dibujar cajas
-                if pos in boxes:
+                if pos in box_positions:
                     color = 'red' if pos in goals else 'orange'
                     canvas.create_rectangle(x1 + 1, y1 + 1, x2 - 1, y2 - 1, fill=color, outline='brown')
                 
@@ -291,17 +292,24 @@ class MultiAnimationWindow:
             'Left': (0, -1),
             'Right': (0, 1)
         }
-        
+    
         if move in direction_map:
             dr, dc = direction_map[move]
             new_player_pos = (state.player[0] + dr, state.player[1] + dc)
             
             # Verificar si empuja una caja
-            if new_player_pos in state.boxes:
+            box_to_move = None
+            for box in state.boxes:
+                if box.pos == new_player_pos:
+                    box_to_move = box
+                    break
+            
+            if box_to_move:
                 new_box_pos = (new_player_pos[0] + dr, new_player_pos[1] + dc)
                 boxes_set = set(state.boxes)
-                boxes_set.remove(new_player_pos)
-                boxes_set.add(new_box_pos)
+                boxes_set.remove(box_to_move)
+                # Create a new Box object with the same ID but new position
+                boxes_set.add(Box(box_to_move.id, new_box_pos))
                 state.boxes = boxes_set
             
             # Actualizar posición del jugador
