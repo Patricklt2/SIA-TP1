@@ -2,17 +2,17 @@ import os
 import csv
 from pathlib import Path
 
-from run_sokoban.search_algorithms.bfs import bfs
-from run_sokoban.search_algorithms.dfs import dfs
-from run_sokoban.search_algorithms.iddfs import iddfs
-from run_sokoban.search_algorithms.astar import astar
-from run_sokoban.search_algorithms.ggs import ggs
-from run_sokoban.search_algorithms.heuristics import manhattan_heuristic
-from run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_neighbors
+from src.run_sokoban.search_algorithms.bfs import bfs
+from src.run_sokoban.search_algorithms.dfs import dfs
+from src.run_sokoban.search_algorithms.iddfs import iddfs
+from src.run_sokoban.search_algorithms.astar import astar
+from src.run_sokoban.search_algorithms.ggs import ggs
+from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic
+from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_neighbors
 
 
-MAPS_DIR = Path("maps2")
-RESULTS_DIR = Path("results")
+MAPS_DIR = Path("src/maps2")
+RESULTS_DIR = Path("src/results")
 RESULTS_DIR.mkdir(exist_ok=True)
 
 # Definimos los algoritmos (usamos manhattan como heurística default)

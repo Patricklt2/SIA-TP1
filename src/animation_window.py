@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import time
-from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares
+from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, Box
 from src.run_sokoban.search_algorithms.bfs import bfs
 from src.run_sokoban.search_algorithms.dfs import dfs
 from src.run_sokoban.search_algorithms.iddfs import iddfs
@@ -63,8 +63,8 @@ class AnimationWindow:
         self.canvas.delete("all")
         
         walls, floors, goals = self.sokoban_map.walls, self.sokoban_map.floors, self.sokoban_map.goals
-        boxes, player = self.current_state.boxes, self.current_state.player
-        
+        player = self.current_state.player
+        boxes = {box.pos for box in self.current_state.boxes}
         # Calculate cell size based on map dimensions
         min_r = min(r for r, c in floors | walls)
         max_r = max(r for r, c in floors | walls)
@@ -141,26 +141,27 @@ class AnimationWindow:
             self.draw_map()
     
     def apply_move(self, move):
-        # Convert move direction to coordinate changes
+        action, box_id = move
         direction_map = {
             'Up': (-1, 0),
             'Down': (1, 0),
             'Left': (0, -1),
             'Right': (0, 1)
         }
-        
-        if move in direction_map:
-            dr, dc = direction_map[move]
-            new_player_pos = (self.current_state.player[0] + dr, self.current_state.player[1] + dc)
+
+        if action not in direction_map:
+            return
+
+        dr, dc = direction_map[action]
+        new_player_pos = (self.current_state.player[0] + dr, self.current_state.player[1] + dc)
+
+        boxes_set = set(self.current_state.boxes)
+
+        if box_id is not None:
+            box_to_move = next(b for b in boxes_set if b.id == box_id)
+            new_box_pos = (box_to_move.pos[0] + dr, box_to_move.pos[1] + dc)
+            boxes_set.remove(box_to_move)
+            boxes_set.add(Box(box_to_move.id, new_box_pos))
             
-            # Check if the move pushes a box
-            if new_player_pos in self.current_state.boxes:
-                new_box_pos = (new_player_pos[0] + dr, new_player_pos[1] + dc)
-                # Update box position - convert to set, modify, then convert back if needed
-                boxes_set = set(self.current_state.boxes)
-                boxes_set.remove(new_player_pos)
-                boxes_set.add(new_box_pos)
-                self.current_state.boxes = boxes_set
-            
-            # Update player position
-            self.current_state.player = new_player_pos
+        self.current_state.boxes = boxes_set
+        self.current_state.player = new_player_pos

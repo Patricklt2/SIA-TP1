@@ -1,5 +1,19 @@
 from collections import deque
 
+class Box:
+    def __init__(self, box_id, pos):
+        self.id = box_id
+        self.pos = pos
+
+    def __hash__(self):
+        return hash((self.id, self.pos))
+
+    def __eq__(self, other):
+        return isinstance(other, Box) and self.id == other.id and self.pos == other.pos
+
+    def __repr__(self):
+        return f"Box(id={self.id}, pos={self.pos})"
+
 class SokobanMap:
     def __init__(self, walls, goals, boxes, player, floors):
         self.walls = walls
@@ -20,7 +34,7 @@ class SokobanState:
         self.cost = cost
 
     def is_goal(self, goals):
-        return self.boxes == goals
+        return {b.pos for b in self.boxes} == goals
 
     def __hash__(self):
         return hash((self.player, self.boxes))
@@ -38,6 +52,8 @@ def parse_map(filepath):
     with open(filepath, "r") as f:
         lines = [line.rstrip("\n") for line in f]
 
+    box_counter = 1
+
     for r, line in enumerate(lines):
         for c, ch in enumerate(line):
             pos = (r, c)
@@ -48,11 +64,13 @@ def parse_map(filepath):
                 if ch == ".":
                     goals.add(pos)
                 elif ch == "$":
-                    boxes.add(pos)
+                    boxes.add(Box(box_counter, pos))
+                    box_counter += 1
                 elif ch == "@":
                     player = pos
                 elif ch == "*":
-                    boxes.add(pos)
+                    boxes.add(Box(box_counter, pos))
+                    box_counter += 1
                     goals.add(pos)
                 elif ch == "+":
                     player = pos
@@ -80,31 +98,45 @@ def get_neighbors(state, sokoban_map, dead_squares):
             continue
 
         new_boxes = set(boxes)
-        if new_pos in boxes:
-            box_r = new_r + dr
-            box_c = new_c + dc
-            new_box_pos = (box_r, box_c)
 
-            if new_box_pos in walls or new_box_pos in boxes:
+        box_to_move = next((b for b in boxes if b.pos == new_pos), None)
+        if box_to_move:
+            new_box_pos = (box_to_move.pos[0]+dr, box_to_move.pos[1]+dc)
+
+            if new_box_pos in walls or any(b.pos == new_box_pos for b in boxes):
                 continue
 
             if new_box_pos in dead_squares and new_box_pos not in goals:
                 continue
 
-            if is_box_stuck(new_box_pos, new_boxes, walls, goals):
+            if is_box_stuck(new_box_pos, {b.pos for b in new_boxes - {box_to_move}} | {new_box_pos}, walls, goals):
                 continue
 
-            squares = [(box_r, box_c), (box_r+1, box_c), (box_r, box_c+1), (box_r+1, box_c+1)]
-            if all(s not in goals and (s in walls or s in boxes) for s in squares):
-                continue
-            squares = [(box_r, box_c), (box_r-1, box_c), (box_r, box_c-1), (box_r-1, box_c-1)]
-            if all(s not in goals and (s in walls or s in boxes) for s in squares):
+            squares = [
+                (new_box_pos[0], new_box_pos[1]),
+                (new_box_pos[0]+1, new_box_pos[1]),
+                (new_box_pos[0], new_box_pos[1]+1),
+                (new_box_pos[0]+1, new_box_pos[1]+1)
+            ]
+            if all(s not in goals and (s in walls or any(b.pos == s for b in boxes)) for s in squares):
                 continue
 
-            new_boxes.remove(new_pos)
-            new_boxes.add(new_box_pos)
+            squares = [
+                (new_box_pos[0], new_box_pos[1]),
+                (new_box_pos[0]-1, new_box_pos[1]),
+                (new_box_pos[0], new_box_pos[1]-1),
+                (new_box_pos[0]-1, new_box_pos[1]-1)
+            ]
+            if all(s not in goals and (s in walls or any(b.pos == s for b in boxes)) for s in squares):
+                continue
 
-        neighbors.append(SokobanState(new_pos, new_boxes, parent=state, move=action, cost=state.cost+1))
+            # Replace the moved box with updated position, keeping the same ID
+            new_boxes.remove(box_to_move)
+            new_boxes.add(Box(box_to_move.id, new_box_pos))
+
+        # Record move as (action, box_id or None)
+        move_record = (action, box_to_move.id if box_to_move else None)
+        neighbors.append(SokobanState(new_pos, new_boxes, parent=state, move=move_record, cost=state.cost+1))
 
     return neighbors
 
@@ -158,6 +190,7 @@ def precompute_dead_squares(sokoban_map):
     return dead_squares
 
 def compute_reachable(player, boxes, walls):
+    box_positions = {box.pos for box in boxes}
     reachable = set()
     queue = deque([player])
     while queue:
@@ -168,7 +201,7 @@ def compute_reachable(player, boxes, walls):
         r, c = pos
         for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
             new_pos = (r+dr, c+dc)
-            if new_pos not in walls and new_pos not in boxes and new_pos not in reachable:
+            if new_pos not in walls and new_pos not in box_positions and new_pos not in reachable:
                 queue.append(new_pos)
     return reachable
 
@@ -179,28 +212,31 @@ def get_push_neighbors(state, sokoban_map, dead_squares):
     walls = sokoban_map.walls
     goals = sokoban_map.goals
     boxes = state.boxes
+
+    box_positions = {b.pos for b in boxes}
     reachable = compute_reachable(state.player, boxes, walls)
 
     for box in boxes:
         for dr, dc, move in directions:
-            push_from = (box[0]-dr, box[1]-dc)
-            new_box_pos = (box[0]+dr, box[1]+dc)
+            push_from = (box.pos[0]-dr, box.pos[1]-dc)
+            new_box_pos = (box.pos[0]+dr, box.pos[1]+dc)
 
             if push_from not in reachable:
                 continue
 
-            if new_box_pos in walls or new_box_pos in boxes:
+            if new_box_pos in walls or new_box_pos in box_positions:
                 continue
 
             if new_box_pos in dead_squares and new_box_pos not in goals:
                 continue
 
-            if is_box_stuck(new_box_pos, boxes - {box} | {new_box_pos}, walls, goals):
+            updated_boxes = {b if b.id != box.id else Box(b.id, new_box_pos) for b in boxes}
+
+            if is_box_stuck(new_box_pos, {b.pos for b in updated_boxes}, walls, goals):
                 continue
 
-            new_boxes = set(boxes)
-            new_boxes.remove(box)
-            new_boxes.add(new_box_pos)
-            neighbors.append(SokobanState(box, new_boxes, parent=state, move=move, cost=state.cost+1))
+            new_player_pos = box.pos
+            move_record = (move, box.id)
+            neighbors.append(SokobanState(new_player_pos, updated_boxes, parent=state, move=move_record, cost=state.cost+1))
 
     return neighbors

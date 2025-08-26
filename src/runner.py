@@ -90,7 +90,8 @@ class SokobanGUI:
                 pos = (r, c)
                 if pos in walls: line += "#"
                 elif pos == player: line += "@"
-                elif pos in boxes: line += "*" if pos in goals else "$"
+                elif pos in [b.pos for b in boxes]:
+                    line += "*" if pos in goals else "$"
                 elif pos in goals: line += "."
                 else: line += " "
             lines.append(line.ljust(w))
@@ -141,7 +142,7 @@ class SokobanGUI:
         self.results_text.insert(tk.END, f"Max frontier size: {result['max_frontier']}\n")
         self.results_text.insert(tk.END, f"Time: {result['time']:.4f} s\n")
         if 'solution' in result and result['solution']:
-            moves_text = ' '.join(result['solution'])
+            moves_text = ' '.join(f"{move[0]}({move[1]})" if move[1] is not None else move[0] for move in result['solution'])
             self.results_text.insert(tk.END, f"Moves: {moves_text}\n\n")
             self.last_solution = result['solution']
             self.animate_button.config(state=tk.NORMAL)
