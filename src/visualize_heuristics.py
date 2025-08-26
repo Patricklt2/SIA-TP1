@@ -20,12 +20,12 @@ def create_comparison_plot(df, metric, title, ylabel):
     
     plt.grid(True, linestyle='--', alpha=0.7, axis='y')
     plt.tight_layout()
-    plt.savefig(f'src/results/{metric}_l2.png')
+    plt.savefig(f'src/results/{metric}_l6.png')
     plt.close()
 
 def analyze_results():
     # Read the data
-    df = pd.read_csv("src/results/level_2_results.csv", encoding='latin1')
+    df = pd.read_csv("src/results/level_6_results.csv", encoding='latin1')
     
     # Create plots for each metric
     create_comparison_plot(df, 'time', 'Execution Time by Algorithm', 'Time (seconds)')
