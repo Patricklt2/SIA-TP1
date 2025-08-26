@@ -1,20 +1,53 @@
-# Desde la raiz del repo correr:
+# Sokoban Solver - Instrucciones de Uso
+
+## Ejecución del Programa
+
+**Ejecutar la interfaz gráfica principal:**
+```
 python -m src.runner
-
-# o Podria tambien ser
+```
+```
 python3 -m src.runner
+```
 
-# Si estan en MacOS puede faltar la instalacion de tkinter
-# En ese caso, correr:
+## Instalación de Dependencias
+
+**Instalar Tkinter (si falta):**
+
+**En macOS:**
+```
 brew install python-tk
+```
 
-# Si estan en linux y falta tkinter:
+**En Linux (Debian/Ubuntu):**
+```
 sudo apt update
 sudo apt install python3-tk
+```
 
+## Visualización de Animaciones Simultáneas
 
-# Para ver la animacion simultanea de los diferentes metodos de busqueda
+**Ver comparación de todos los métodos en un nivel:**
+```
 python -m src.animation_all_results src/results/level_6_results.csv level_6 src/maps/level_6.txt
+```
 
-# Para guardar soluciones de otro nivel
+
+**Parámetros:**
+- src/results/level_6_results.csv → Archivo CSV con los resultados
+- level_6 → Nombre del nivel a visualizar
+- src/maps/level_6.txt → Archivo del mapa correspondiente
+
+## Generar Resultados para un Nivel
+
+**Guardar soluciones de un nivel específico:**
+```
 python -m src.level_results level_1
+```
+
+
+**Esto ejecutará:**
+- BFS, DFS, IDDFS
+- A* con 3 heurísticas diferentes
+- GGS con 3 heurísticas diferentes
+- Guardará los resultados en src/results/level_1_results.csv
