@@ -62,7 +62,7 @@ def run_single_level(level_name):
             print(f"Corriendo {algo_name} en {level_name}...")
             result = algo_func(initial_state)
             solution_list = result.get('solution', [])
-            solution_str = ' '.join(f"{pos[0]},{pos[1]}" for pos, _id in solution_list) if solution_list else ''
+            solution_str = ' '.join(f"{pos}" for pos, _id in solution_list) if solution_list else ''
             
             results.append({
                 "level": level_name,
@@ -87,7 +87,7 @@ def run_single_level(level_name):
             try:
                 result_astar = astar(initial_state, sokoban_map, heuristic_func, dead_squares, get_neighbors)
                 solution_list = result_astar.get('solution', [])
-                solution_str = ' '.join(f"{pos[0]},{pos[1]}" for pos, _id in solution_list) if solution_list else ''
+                solution_str = ' '.join(f"{pos}" for pos, _id in solution_list) if solution_list else ''
                 
                 results.append({
                     "level": level_name,
@@ -122,7 +122,7 @@ def run_single_level(level_name):
             try:
                 result_ggs = ggs(initial_state, sokoban_map, heuristic_func, dead_squares, get_neighbors)
                 solution_list = result_ggs.get('solution', [])
-                solution_str = ' '.join(f"{pos[0]},{pos[1]}" for pos, _id in solution_list) if solution_list else ''
+                solution_str = ' '.join(f"{pos}" for pos, _id in solution_list) if solution_list else ''
                 
                 results.append({
                     "level": level_name,
