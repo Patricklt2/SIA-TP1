@@ -29,14 +29,12 @@ sudo apt install python3-tk
 
 **Ver comparación de todos los métodos en un nivel:**
 ```
-python -m src.animation_all_results src/results/level_6_results.csv level_6 src/maps/level_6.txt
+python -m src.animation_all_results level_1 [push|player]
 ```
+push → guarda los resultados en modo push.
 
+player → guarda los resultados en modo player.
 
-**Parámetros:**
-- src/results/level_6_results.csv → Archivo CSV con los resultados
-- level_6 → Nombre del nivel a visualizar
-- src/maps/level_6.txt → Archivo del mapa correspondiente
 
 ## Generar Resultados para un Nivel
 
@@ -45,9 +43,6 @@ python -m src.animation_all_results src/results/level_6_results.csv level_6 src/
 python -m src.level_results level_1 [push|player]
 ```
 
-push → guarda los resultados en modo push.
-
-player → guarda los resultados en modo player.
 
 **Esto ejecutará:**
 - BFS, DFS, IDDFS
