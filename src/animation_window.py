@@ -11,12 +11,13 @@ from src.run_sokoban.search_algorithms.ggs import ggs
 from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes
 
 class AnimationWindow:
-    def __init__(self, master, sokoban_map, solution_moves):
+    def __init__(self, master, sokoban_map, solution_moves, mode):
         self.master = master
         master.title("Sokoban Animation")
         
         self.sokoban_map = sokoban_map
         self.solution_moves = solution_moves
+        self.mode = mode
         self.current_step = 0
         self.animation_speed = tk.IntVar(value=500)  # ms between moves
         
@@ -63,6 +64,7 @@ class AnimationWindow:
         self.canvas.delete("all")
         
         walls, floors, goals = self.sokoban_map.walls, self.sokoban_map.floors, self.sokoban_map.goals
+
         player = self.current_state.player
         boxes = {box.pos for box in self.current_state.boxes}
         # Calculate cell size based on map dimensions
@@ -107,7 +109,7 @@ class AnimationWindow:
                     self.canvas.create_rectangle(x1 + 3, y1 + 3, x2 - 3, y2 - 3, fill=color, outline='brown')
                 
                 # Draw player
-                if pos == player:
+                if pos == player and self.mode != "push_mode" :
                     self.canvas.create_oval(x1 + 5, y1 + 5, x2 - 5, y2 - 5, fill='blue', outline='darkblue')
     
     def play_animation(self):

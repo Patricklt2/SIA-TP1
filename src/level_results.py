@@ -9,7 +9,7 @@ from src.run_sokoban.search_algorithms.iddfs import iddfs
 from src.run_sokoban.search_algorithms.astar import astar
 from src.run_sokoban.search_algorithms.ggs import ggs
 from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes
-from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_neighbors
+from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_neighbors, get_push_neighbors
 
 MAPS_DIR = Path("src/maps")
 RESULTS_DIR = Path("src/results")
@@ -22,19 +22,13 @@ HEURISTIC_MAP = {
     "player_boxes": player_boxes
 }
 
-def make_algo_map(sokoban_map, dead_squares, heuristic_name="manhattan"):
-    """Crea el mapa de algoritmos con la heurística especificada"""
-    heuristic_func = HEURISTIC_MAP[heuristic_name]
-    
-    return {
-        "BFS": lambda s: bfs(s, sokoban_map.goals, sokoban_map, dead_squares, get_neighbors),
-        "DFS": lambda s: dfs(s, sokoban_map.goals, sokoban_map, dead_squares, get_neighbors),
-        "IDDFS": lambda s: iddfs(s, sokoban_map, dead_squares, get_neighbors, 1000),
-        f"A_{heuristic_name}": lambda s: astar(s, sokoban_map, heuristic_func, dead_squares, get_neighbors),
-        f"GGS_{heuristic_name}": lambda s: ggs(s, sokoban_map, heuristic_func, dead_squares, get_neighbors),
-    }
+MODE_MAP = {
+    "player" : get_neighbors,
+    "push" : get_push_neighbors
+}
 
-def run_single_level(level_name):
+
+def run_single_level(level_name, mode):
     """Ejecuta todos los algoritmos en un solo nivel"""
     file_path = MAPS_DIR / f"{level_name}.txt"
     
@@ -52,18 +46,16 @@ def run_single_level(level_name):
         
         # Algoritmos sin heurística
         basic_algorithms = {
-            "BFS": lambda s: bfs(s, sokoban_map.goals, sokoban_map, dead_squares, get_neighbors),
-            "DFS": lambda s: dfs(s, sokoban_map.goals, sokoban_map, dead_squares, get_neighbors),
-            "IDDFS": lambda s: iddfs(s, sokoban_map, dead_squares, get_neighbors, 1000),
+            "BFS": lambda s: bfs(s, sokoban_map.goals, sokoban_map, dead_squares, MODE_MAP[mode]),
+            "DFS": lambda s: dfs(s, sokoban_map.goals, sokoban_map, dead_squares, MODE_MAP[mode]),
+            "IDDFS": lambda s: iddfs(s, sokoban_map, dead_squares, MODE_MAP[mode], 1000),
         }
         
         # Ejecutar algoritmos básicos
         for algo_name, algo_func in basic_algorithms.items():
             print(f"Corriendo {algo_name} en {level_name}...")
             result = algo_func(initial_state)
-            solution_list = result.get('solution', [])
-            solution_str = ' '.join(f"{pos}" for pos, _id in solution_list) if solution_list else ''
-            
+            solution_list = result.get('solution', [])            
             results.append({
                 "level": level_name,
                 "algorithm": algo_name,
@@ -74,7 +66,7 @@ def run_single_level(level_name):
                 "max_frontier": result.get('max_frontier'),
                 "time": result.get('time'),
                 "solution_length": len(result.get('solution', [])) if result.get('solution') else None,
-                "solution": solution_str
+                "solution": result.get('solution')
             })
             print(f"✔ {algo_name} completado (success={result['result']})")
         
@@ -85,10 +77,9 @@ def run_single_level(level_name):
             # A* con heurística específica
             print(f"Corriendo A* con {heuristic_name} en {level_name}...")
             try:
-                result_astar = astar(initial_state, sokoban_map, heuristic_func, dead_squares, get_neighbors)
+                result_astar = astar(initial_state, sokoban_map, heuristic_func, dead_squares, MODE_MAP[mode])
                 solution_list = result_astar.get('solution', [])
-                solution_str = ' '.join(f"{pos}" for pos, _id in solution_list) if solution_list else ''
-                
+
                 results.append({
                     "level": level_name,
                     "algorithm": "A*",
@@ -99,7 +90,7 @@ def run_single_level(level_name):
                     "max_frontier": result_astar.get('max_frontier'),
                     "time": result_astar.get('time'),
                     "solution_length": len(result_astar.get('solution', [])) if result_astar.get('solution') else None,
-                    "solution": solution_str
+                    "solution": result_astar.get('solution'),
                 })
                 print(f"✔ A*_{heuristic_name} completado (success={result_astar['result']})")
             except Exception as e:
@@ -120,9 +111,8 @@ def run_single_level(level_name):
             # GGS con heurística específica
             print(f"Corriendo GGS con {heuristic_name} en {level_name}...")
             try:
-                result_ggs = ggs(initial_state, sokoban_map, heuristic_func, dead_squares, get_neighbors)
+                result_ggs = ggs(initial_state, sokoban_map, heuristic_func, dead_squares, MODE_MAP[mode])
                 solution_list = result_ggs.get('solution', [])
-                solution_str = ' '.join(f"{pos}" for pos, _id in solution_list) if solution_list else ''
                 
                 results.append({
                     "level": level_name,
@@ -134,7 +124,7 @@ def run_single_level(level_name):
                     "max_frontier": result_ggs.get('max_frontier'),
                     "time": result_ggs.get('time'),
                     "solution_length": len(result_ggs.get('solution', [])) if result_ggs.get('solution') else None,
-                    "solution": solution_str
+                    "solution": result_astar.get('solution'),
                 })
                 print(f"✔ GGS_{heuristic_name} completado (success={result_ggs['result']})")
             except Exception as e:
@@ -186,7 +176,7 @@ def run_single_level(level_name):
                 })
 
     # Guardar CSV para este nivel
-    out_file = RESULTS_DIR / f"{level_name}_results.csv"
+    out_file = RESULTS_DIR / f"{level_name}_{mode}_results.csv"
     with open(out_file, "w", newline="", encoding='utf-8') as f:
         writer = csv.DictWriter(
             f,
@@ -206,19 +196,11 @@ def main():
     """Función principal con argumentos de línea de comandos"""
     parser = argparse.ArgumentParser(description="Ejecutar algoritmos de Sokoban en un nivel específico")
     parser.add_argument("level", help="Nombre del nivel (ej: level_1, level_2)")
-    parser.add_argument("--all", action="store_true", help="Ejecutar en todos los niveles")
+    parser.add_argument("mode", help="Mode player or push")
+    
     
     args = parser.parse_args()
-    
-    if args.all:
-        # Ejecutar en todos los niveles
-        files = sorted(MAPS_DIR.glob("level_*.txt"))
-        for file in files:
-            level_name = file.stem
-            run_single_level(level_name)
-    else:
-        # Ejecutar en el nivel específico
-        run_single_level(args.level)
+    run_single_level(args.level, args.mode)
 
 if __name__ == "__main__":
     main()

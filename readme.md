@@ -42,12 +42,15 @@ python -m src.animation_all_results src/results/level_6_results.csv level_6 src/
 
 **Guardar soluciones de un nivel específico:**
 ```
-python -m src.level_results level_1
+python -m src.level_results level_1 [push|player]
 ```
 
+push → guarda los resultados en modo push.
+
+player → guarda los resultados en modo player.
 
 **Esto ejecutará:**
 - BFS, DFS, IDDFS
 - A* con 3 heurísticas diferentes
 - GGS con 3 heurísticas diferentes
-- Guardará los resultados en src/results/level_1_results.csv
+- Guardará los resultados en src/results/level_1_push_results.csv o src/results/level_1_player_results.csv
