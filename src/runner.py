@@ -145,10 +145,12 @@ class SokobanGUI:
             moves_text = ' '.join(f"{move[0]}({move[1]})" if move[1] is not None else move[0] for move in result['solution'])
             self.results_text.insert(tk.END, f"Moves: {moves_text}\n\n")
             self.last_solution = result['solution']
+            self.last_mode = self.run_mode.get()
             self.animate_button.config(state=tk.NORMAL)
         else:
             self.results_text.insert(tk.END, "No solution found\n\n")
             self.last_solution = None
+            self.last_mode = None 
             self.animate_button.config(state=tk.DISABLED)
 
     def run_all_algorithms(self):
@@ -170,13 +172,13 @@ class SokobanGUI:
         self.run_algorithm(name, self.algo_map[name])
 
     def animate_solution(self):
-        if not self.last_solution or not self.sokoban_map:
+        if not self.last_solution or not self.sokoban_map or not self.last_mode:
             messagebox.showwarning("No solution", "No solution to animate. Please run an algorithm first.")
             return
         
         # Create a new window for animation
         animation_window = tk.Toplevel(self.master)
-        AnimationWindow(animation_window, self.sokoban_map, self.last_solution)
+        AnimationWindow(animation_window, self.sokoban_map, self.last_solution, self.last_mode)
 
 if __name__ == "__main__":
     root = tk.Tk()

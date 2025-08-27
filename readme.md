@@ -2,14 +2,6 @@
 
 ## Ejecución del Programa
 
-**Ejecutar la interfaz gráfica principal:**
-```
-python -m src.runner
-```
-```
-python3 -m src.runner
-```
-
 ## Instalación de Dependencias
 
 **Instalar Tkinter (si falta):**
@@ -25,22 +17,30 @@ sudo apt update
 sudo apt install python3-tk
 ```
 
-## Visualización de Animaciones Simultáneas
-
-**Ver comparación de todos los métodos en un nivel:**
+**Ejecutar la interfaz gráfica principal:**
 ```
-python -m src.animation_all_results level_1 [push|player]
+python -m src.runner
 ```
-push → guarda los resultados en modo push.
-
-player → guarda los resultados en modo player.
-
+```
+python3 -m src.runner
+```
 
 ## Generar Resultados para un Nivel
 
 **Guardar soluciones de un nivel específico:**
 ```
 python -m src.level_results level_1 [push|player]
+```
+push → guarda los resultados en modo push.
+
+player → guarda los resultados en modo player.
+
+
+## Visualización de Animaciones Simultáneas
+
+**Ver comparación de todos los métodos en un nivel:**
+```
+python -m src.animation_all_results level_1 [push|player]
 ```
 
 
