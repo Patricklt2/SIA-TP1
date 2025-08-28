@@ -20,6 +20,11 @@ sudo apt install python3-tk
 pip install scipy
 ```
 
+**Instalar numpy:**
+```
+pip install numpy
+```
+
 **Instalar pandas y matplotlib para generar los graficos:**
 ```
 pip install pandas matplotlib
