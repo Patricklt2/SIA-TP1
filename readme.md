@@ -39,12 +39,24 @@ python3 -m src.runner
 
 **Guardar soluciones de un nivel específico:**
 ```
-python -m src.level_results level_1 [push|player] [--algorithms {bfs,dfs,iddfs,astar,ggs}]
+python -m src.level_results <nivel> <modo> [--algorithms {bfs,dfs,iddfs,astar,ggs}]
 ```
 
-ejemplo:
+- <nivel> → nombre del nivel (ej: level_1, level_2, etc.)
+
+- <modo> → player o push
+
+- --algorithms (opcional) → especifica qué algoritmos ejecutar.
+
+ejemplos:
+Ejecutar solo GGS y A* en modo push sobre el nivel 1:
 ```
-python -m src.run_sokoban.main level_2 push -a bfs dfs astar
+python -m src.level_results level_1 push --a ggs astar 
+```
+
+Ejecutar todos los algoritmos en modo player sobre el nivel 10:
+```
+python -m src.level_results level_10 player
 ```
 
 - push → guarda los resultados en modo push.
