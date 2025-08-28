@@ -8,7 +8,7 @@ from src.run_sokoban.search_algorithms.dfs import dfs
 from src.run_sokoban.search_algorithms.iddfs import iddfs
 from src.run_sokoban.search_algorithms.astar import astar
 from src.run_sokoban.search_algorithms.ggs import ggs
-from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes
+from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes, hungarian_heuristic
 from src.run_sokoban.sokoban import parse_map, SokobanState, precompute_dead_squares, get_neighbors, get_push_neighbors
 
 MAPS_DIR = Path("src/maps")
@@ -19,7 +19,8 @@ RESULTS_DIR.mkdir(exist_ok=True)
 HEURISTIC_MAP = {
     "manhattan": manhattan_heuristic,
     "boxes_out": heuristic_boxes_out,
-    "player_boxes": player_boxes
+    "player_boxes": player_boxes,
+    "hungarian": hungarian_heuristic
 }
 
 MODE_MAP = {
@@ -85,7 +86,7 @@ def run_single_level(level_name, mode, algorithms_to_run=None):
         
         # Ejecutar A* y GGS con diferentes heurísticas (si están seleccionados)
         if "astar" in algorithms_to_run or "ggs" in algorithms_to_run:
-            for heuristic_name in ["manhattan", "boxes_out", "player_boxes"]:
+            for heuristic_name in ["manhattan", "boxes_out", "player_boxes", "hungarian"]:
                 heuristic_func = HEURISTIC_MAP[heuristic_name]
                 
                 # A* con heurística específica
@@ -175,7 +176,7 @@ def run_single_level(level_name, mode, algorithms_to_run=None):
                 })
         
         if "astar" in algorithms_to_run or "ggs" in algorithms_to_run:
-            for heuristic_name in ["manhattan", "boxes_out", "player_boxes"]:
+            for heuristic_name in ["manhattan", "boxes_out", "player_boxes", "hungarian"]:
                 for algo_name in ["A*", "GGS"]:
                     if (algo_name == "A*" and "astar" in algorithms_to_run) or (algo_name == "GGS" and "ggs" in algorithms_to_run):
                         results.append({

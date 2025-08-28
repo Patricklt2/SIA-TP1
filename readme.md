@@ -41,6 +41,12 @@ python3 -m src.runner
 ```
 python -m src.level_results level_1 [push|player] [--algorithms {bfs,dfs,iddfs,astar,ggs}]
 ```
+
+ejemplo:
+```
+python -m src.run_sokoban.main level_2 push -a bfs dfs astar
+```
+
 - push → guarda los resultados en modo push.
 - player → guarda los resultados en modo player.
 
