@@ -112,29 +112,9 @@ def get_neighbors(state, sokoban_map, dead_squares):
             if is_box_stuck(new_box_pos, {b.pos for b in new_boxes - {box_to_move}} | {new_box_pos}, walls, goals):
                 continue
 
-            squares = [
-                (new_box_pos[0], new_box_pos[1]),
-                (new_box_pos[0]+1, new_box_pos[1]),
-                (new_box_pos[0], new_box_pos[1]+1),
-                (new_box_pos[0]+1, new_box_pos[1]+1)
-            ]
-            if all(s not in goals and (s in walls or any(b.pos == s for b in boxes)) for s in squares):
-                continue
-
-            squares = [
-                (new_box_pos[0], new_box_pos[1]),
-                (new_box_pos[0]-1, new_box_pos[1]),
-                (new_box_pos[0], new_box_pos[1]-1),
-                (new_box_pos[0]-1, new_box_pos[1]-1)
-            ]
-            if all(s not in goals and (s in walls or any(b.pos == s for b in boxes)) for s in squares):
-                continue
-
-            # Replace the moved box with updated position, keeping the same ID
             new_boxes.remove(box_to_move)
             new_boxes.add(Box(box_to_move.id, new_box_pos))
 
-        # Record move as (action, box_id or None)
         move_record = (action, box_to_move.id if box_to_move else None)
         neighbors.append(SokobanState(new_pos, new_boxes, parent=state, move=move_record, cost=state.cost+1))
 
