@@ -1,4 +1,19 @@
+from scipy.optimize import linear_sum_assignment
+import numpy as np
+
 # Admisibles
+def hungarian_heuristic(state, goals):
+    boxes = [box.pos for box in state.boxes]
+    n = len(boxes)
+    m = len(goals)
+    cost = np.zeros((n, m), dtype=int)
+    for i, b in enumerate(boxes):
+        for j, g in enumerate(goals):
+            cost[i, j] = abs(b[0] - g[0]) + abs(b[1] - g[1])
+
+    row_ind, col_ind = linear_sum_assignment(cost)
+    return int(cost[row_ind, col_ind].sum())
+
 def manhattan_distance(pos1, pos2):
     return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 

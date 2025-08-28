@@ -7,7 +7,7 @@ from src.run_sokoban.search_algorithms.dfs import dfs
 from src.run_sokoban.search_algorithms.iddfs import iddfs
 from src.run_sokoban.search_algorithms.astar import astar
 from src.run_sokoban.search_algorithms.ggs import ggs
-from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes
+from src.run_sokoban.search_algorithms.heuristics import manhattan_heuristic, heuristic_boxes_out, player_boxes, hungarian_heuristic
 from src.animation_window import AnimationWindow
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -48,7 +48,7 @@ class SokobanGUI:
 
         self.heuristic_var = tk.StringVar(value="manhattan_heuristic")
         self.heuristic_menu = ttk.Combobox(master, textvariable=self.heuristic_var,
-                                           values=["manhattan_heuristic", "heuristic_boxes_out", "player_boxes"])
+                                           values=["manhattan_heuristic", "heuristic_boxes_out", "player_boxes", "hungarian_heuristic"])
         self.heuristic_menu.grid(row=2, column=3)
 
         self.results_text = tk.Text(master, width=80, height=20)
@@ -122,6 +122,8 @@ class SokobanGUI:
             return heuristic_boxes_out
         elif self.heuristic_var.get() == "player_boxes":
             return player_boxes
+        elif self.heuristic_var.get() == "hungarian_heuristic":
+            return hungarian_heuristic
         else:
             return manhattan_heuristic
 
