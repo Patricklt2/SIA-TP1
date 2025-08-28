@@ -1,7 +1,5 @@
 # Sokoban Solver - Instrucciones de Uso
 
-## Ejecución del Programa
-
 ## Instalación de Dependencias
 
 **Instalar Tkinter (si falta):**
@@ -17,6 +15,13 @@ sudo apt update
 sudo apt install python3-tk
 ```
 
+**Instalar pandas y matplotlib para generar los graficos:**
+```
+pip install pandas matplotlib
+```
+
+## Ejecución del Programa
+
 **Ejecutar la interfaz gráfica principal:**
 ```
 python -m src.runner
@@ -31,9 +36,14 @@ python3 -m src.runner
 ```
 python -m src.level_results level_1 [push|player]
 ```
-push → guarda los resultados en modo push.
+- push → guarda los resultados en modo push.
+- player → guarda los resultados en modo player.
 
-player → guarda los resultados en modo player.
+**Esto ejecutará:**
+- BFS, DFS, IDDFS
+- A* con 3 heurísticas diferentes
+- GGS con 3 heurísticas diferentes
+- Guardará los resultados en src/results/level_1_push_results.csv o src/results/level_1_player_results.csv
 
 
 ## Visualización de Animaciones Simultáneas
@@ -42,13 +52,8 @@ player → guarda los resultados en modo player.
 ```
 python -m src.animation_all_results level_1 [push|player]
 ```
+- Debe estar en la carpeta src/results el archivo: level_1_push_results.csv o level_1_player_results.csv
 
-
-**Esto ejecutará:**
-- BFS, DFS, IDDFS
-- A* con 3 heurísticas diferentes
-- GGS con 3 heurísticas diferentes
-- Guardará los resultados en src/results/level_1_push_results.csv o src/results/level_1_player_results.csv
 
 ## Visualización de Graficos
 
@@ -56,18 +61,18 @@ python -m src.animation_all_results level_1 [push|player]
 ```
 python -m src.graphs_informados level_1
 ```
-- Debe estar en la carpeta results el archivo: level_1_player_results.csv
+- Debe estar en la src/carpeta results el archivo: level_1_player_results.csv
 
 
 **Ver comparación de Metodos No Informados:**
 ```
-python -m src.graphs_informados level_1
+python -m src.graphs_no_informados level_1
 ```
-- Debe estar en la carpeta results el archivo: level_1_player_results.csv
+- Debe estar en la carpeta src/results el archivo: level_1_player_results.csv
 
 
 **Ver comparación de modo player y modo push**
 ```
 python -m src.graphs_modes level_6
 ```
-- Debe estar en la carpeta results el archivo: level_1_player_results.csv y level_1_push_results.csv
+- Debe estar en la carpeta src/results el archivo: level_1_player_results.csv y level_1_push_results.csv
