@@ -4,7 +4,7 @@ import os
 import sys
 import numpy as np
 
-def generar_graficos(level: int):
+def generar_graficos(level):
     # Paths
     results_dir = "src/results"
     graphs_dir = "src/graphs"

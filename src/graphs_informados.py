@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 import os
 import sys
 
-def generar_graficos_player_informados(level: int):
+def generar_graficos_player_informados(level):
     results_dir = "src/results"
     graphs_dir = "src/graphs"
     os.makedirs(graphs_dir, exist_ok=True)
 
     # Leer CSV del modo Player
-    player_file = os.path.join(results_dir, f"level_{level}_player_results.csv")
+    player_file = os.path.join(results_dir, f"{level}_player_results.csv")
     df = pd.read_csv(player_file)
 
     # Filtrar solo BFS, A* y GGS
@@ -58,9 +58,9 @@ def generar_graficos_player_informados(level: int):
             tick.set_horizontalalignment('right')
 
 
-    plt.suptitle(f"Comparación de Métodos Informados - Nivel {level} - Modo Player", fontsize=18)
+    plt.suptitle(f"Comparación de Métodos Informados - {level} - Modo Player", fontsize=18)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
-    output_file = os.path.join(graphs_dir, f"level_{level}_player_comparison_informados.png")
+    output_file = os.path.join(graphs_dir, f"{level}_player_comparison_informados.png")
     plt.savefig(output_file)
     plt.close()
 
@@ -71,5 +71,5 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Uso: python -m src.graphs_informados <nivel>")
         sys.exit(1)
-    nivel = int(sys.argv[1])
+    nivel = sys.argv[1]
     generar_graficos_player_informados(nivel)

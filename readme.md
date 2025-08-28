@@ -49,3 +49,25 @@ python -m src.animation_all_results level_1 [push|player]
 - A* con 3 heurísticas diferentes
 - GGS con 3 heurísticas diferentes
 - Guardará los resultados en src/results/level_1_push_results.csv o src/results/level_1_player_results.csv
+
+## Visualización de Graficos
+
+**Ver comparación de Metodos Informados:**
+```
+python -m src.graphs_informados level_1
+```
+- Debe estar en la carpeta results el archivo: level_1_player_results.csv
+
+
+**Ver comparación de Metodos No Informados:**
+```
+python -m src.graphs_informados level_1
+```
+- Debe estar en la carpeta results el archivo: level_1_player_results.csv
+
+
+**Ver comparación de modo player y modo push**
+```
+python -m src.graphs_modes level_6
+```
+- Debe estar en la carpeta results el archivo: level_1_player_results.csv y level_1_push_results.csv

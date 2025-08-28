@@ -4,14 +4,14 @@ import os
 import sys
 import numpy as np
 
-def generar_graficos_player_unido(level: int):
+def generar_graficos_player_unido(level):
     # Paths
     results_dir = "src/results"
     graphs_dir = "src/graphs"
     os.makedirs(graphs_dir, exist_ok=True)
 
     # Archivo del modo Player
-    player_file = os.path.join(results_dir, f"level_{level}_player_results.csv")
+    player_file = os.path.join(results_dir, f"{level}_player_results.csv")
     df = pd.read_csv(player_file)
 
     # Filtrar solo BFS, DFS e IDDFS
@@ -48,9 +48,9 @@ def generar_graficos_player_unido(level: int):
         axes[i].set_ylabel(label)
         axes[i].set_title(label)
 
-    plt.suptitle(f"Comparación de Métodos - Nivel {level} - Modo Player", fontsize=16)
+    plt.suptitle(f"Comparación de Métodos - {level} - Modo Player", fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-    output_file = os.path.join(graphs_dir, f"level_{level}_player_comparison.png")
+    output_file = os.path.join(graphs_dir, f"{level}_player_comparison.png")
     plt.savefig(output_file)
     plt.close()
 
@@ -61,5 +61,5 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Uso: python generar_graficos_player_unido.py <nivel>")
         sys.exit(1)
-    nivel = int(sys.argv[1])
+    nivel = sys.argv[1]
     generar_graficos_player_unido(nivel)
