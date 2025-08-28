@@ -39,7 +39,7 @@ python3 -m src.runner
 
 **Guardar soluciones de un nivel específico:**
 ```
-python -m src.level_results level_1 [push|player]
+python -m src.level_results level_1 [push|player] [--algorithms {bfs,dfs,iddfs,astar,ggs}]
 ```
 - push → guarda los resultados en modo push.
 - player → guarda los resultados en modo player.
