@@ -15,6 +15,11 @@ sudo apt update
 sudo apt install python3-tk
 ```
 
+**Instalar scipy:**
+```
+pip install scipy
+```
+
 **Instalar pandas y matplotlib para generar los graficos:**
 ```
 pip install pandas matplotlib
